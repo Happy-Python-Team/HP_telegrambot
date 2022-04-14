@@ -27,18 +27,22 @@ async def sql_read(message, state):
         except Exception as e:
             await bot.send_message(1060217483, e)
 
-def parser(con,cur):
+    # TODO добавить автопроверку неисполненных заданий и вызов функции
+
+
+def parser(con, cur):
+    # TODO Добавить вырзку данных из БД
     url = f"https://api.vk.com/method/wall.get?domain={group_name}&count={count}&access_token={token}&v=5.131"
     req = requests.get(url)
     src = req.json()
-            # проверяем существует ли директория с именем группы
+    # проверяем существует ли директория с именем группы
     if os.path.exists(f"{group_name}"):
         print(f"Директория с именем {group_name} уже существует!")
     else:
         os.mkdir(group_name)
 
     with open(f"{group_name}/{group_name}.json", "w", encoding="utf-8") as file:
-                json.dump(src, file, indent=4, ensure_ascii=False)
+        json.dump(src, file, indent=4, ensure_ascii=False)
 
     posts = src["response"]["items"]
 
@@ -48,13 +52,13 @@ def parser(con,cur):
 
         try:
             if "attachments" in post:
-                        post = post["attachments"]
-                        [urllib.request.urlretrieve(size['url'], f"{group_name}\{post_id}.jpeg") for size in
-                         post[0]['photo']['sizes'] if post[0]["type"] == "photo" and size['type'] == 'z']
+                post = post["attachments"]
+                [urllib.request.urlretrieve(size['url'], f"{group_name}\{post_id}.jpeg") for size in
+                 post[0]['photo']['sizes'] if post[0]["type"] == "photo" and size['type'] == 'z']
 
 
         except Exception as e:
-                    print(e)
+            print(e)
 
     z = zipfile.ZipFile(f'{group_name}.zip', 'w')  # Создание нового архива
     for root, dirs, files in os.walk(f'{group_name}'):  # Список всех файлов и папок в директории
@@ -68,5 +72,3 @@ def parser(con,cur):
     await bot.send_document(message.from_user.id, document=doc)
     shutil.rmtree(group_name)
     os.remove(f'{group_name}.zip')
-
-
