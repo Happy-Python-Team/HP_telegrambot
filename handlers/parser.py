@@ -6,16 +6,24 @@ from bot_configure import bot
 import shutil
 import zipfile
 import os
+import sqlite3
 
 
 async def sql_read(message, state):
+    conn = sqlite3.connect('order.db')
+    cur = conn.cursor()
+
     async with state.proxy() as data:
         try:
-            with open('state.txt','rw+') as f:
-                f.write('1')
+
             token = os.getenv('VK_TOKEN')
+            tg_id = data['tg_id']
             group_name = data['group_name']
             count = data['post_count']
+
+            cur.execute(f"INSERT INTO orders(group_name,count,telegram_id,is_complete) VALUES(?,?,?,?);", (
+                str(group_name), str(count), str(tg_id), 'False',))
+            conn.commit()
             url = f"https://api.vk.com/method/wall.get?domain={group_name}&count={count}&access_token={token}&v=5.131"
             req = requests.get(url)
             src = req.json()
