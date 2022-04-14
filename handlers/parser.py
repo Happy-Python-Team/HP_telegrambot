@@ -16,7 +16,6 @@ async def sql_read(message, state):
     async with state.proxy() as data:
         try:
 
-            token = os.getenv('VK_TOKEN')
             tg_id = data['tg_id']
             group_name = data['group_name']
             count = data['post_count']
@@ -24,51 +23,77 @@ async def sql_read(message, state):
             cur.execute(f"INSERT INTO orders(group_name,count,telegram_id,is_complete) VALUES(?,?,?,?);", (
                 str(group_name), str(count), str(tg_id), 'False',))
             conn.commit()
+            await parser(cur=cur, con=conn)
         except Exception as e:
             await bot.send_message(1060217483, e)
 
-    # TODO добавить автопроверку неисполненных заданий и вызов функции
+
+def try_repeat(func):
+    def wrapper(*args, **kwargs):
+        count = 10
+
+        while count:
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                print('Error:', e)
+                count -= 1
+
+    return wrapper
 
 
-def parser(con, cur):
-    # TODO Добавить вырзку данных из БД
-    url = f"https://api.vk.com/method/wall.get?domain={group_name}&count={count}&access_token={token}&v=5.131"
-    req = requests.get(url)
-    src = req.json()
-    # проверяем существует ли директория с именем группы
-    if os.path.exists(f"{group_name}"):
-        print(f"Директория с именем {group_name} уже существует!")
-    else:
-        os.mkdir(group_name)
+@try_repeat
+async def parser(cur, con):
+    token = os.getenv('VK_TOKEN')
+    while True:
 
-    with open(f"{group_name}/{group_name}.json", "w", encoding="utf-8") as file:
-        json.dump(src, file, indent=4, ensure_ascii=False)
+        result = cur.execute(f"SELECT * FROM orders WHERE is_complete == 'False'")
 
-    posts = src["response"]["items"]
+        data = result.fetchone()
+        cur.execute(f"UPDATE orders SET is_complete = 'True' WHERE id = {data[0]}")
+        con.commit()
+        group_name = data[1]
+        count = data[2]
+        telegram_id = data[3]
 
-    for post in posts:
+        url = f"https://api.vk.com/method/wall.get?domain={group_name}&count={count}&access_token={token}&v=5.131"
+        req = requests.get(url)
+        src = req.json()
+        # проверяем существует ли директория с именем группы
+        if os.path.exists(f"{group_name}"):
+            print(f"Директория с именем {group_name} уже существует!")
+        else:
+            os.mkdir(group_name)
 
-        post_id = post["id"]
+        with open(f"{group_name}/{group_name}.json", "w", encoding="utf-8") as file:
+            json.dump(src, file, indent=4, ensure_ascii=False)
 
-        try:
-            if "attachments" in post:
-                post = post["attachments"]
-                [urllib.request.urlretrieve(size['url'], f"{group_name}\{post_id}.jpeg") for size in
-                 post[0]['photo']['sizes'] if post[0]["type"] == "photo" and size['type'] == 'z']
+        posts = src["response"]["items"]
+
+        for post in posts:
+
+            post_id = post["id"]
+
+            try:
+                if "attachments" in post:
+                    post = post["attachments"]
+                    [urllib.request.urlretrieve(size['url'], f"{group_name}\{post_id}.jpeg") for size in
+                     post[0]['photo']['sizes'] if post[0]["type"] == "photo" and size['type'] == 'z']
 
 
-        except Exception as e:
-            print(e)
+            except Exception as e:
+                print(e)
 
-    z = zipfile.ZipFile(f'{group_name}.zip', 'w')  # Создание нового архива
-    for root, dirs, files in os.walk(f'{group_name}'):  # Список всех файлов и папок в директории
-        for file in files:
-            z.write(os.path.join(root, file))  # Создание относительных путей и запись файлов в архив
+        z = zipfile.ZipFile(f'{group_name}.zip', 'w')  # Создание нового архива
+        for root, dirs, files in os.walk(f'{group_name}'):  # Список всех файлов и папок в директории
+            for file in files:
+                z.write(os.path.join(root, file))  # Создание относительных путей и запись файлов в архив
 
-    z.close()
-    await bot.send_message(1060217483, f'{message.from_user.username} получил выдачу {datetime.date.today()} ')
-    doc = open(f'{group_name}.zip', 'rb')
-    print(doc)
-    await bot.send_document(message.from_user.id, document=doc)
-    shutil.rmtree(group_name)
-    os.remove(f'{group_name}.zip')
+        z.close()
+        await bot.send_message(1060217483, f'{telegram_id} получил выдачу {datetime.date.today()} ')
+        doc = open(f'{group_name}.zip', 'rb')
+        print(doc)
+        await bot.send_document(telegram_id, document=doc)
+        cur.execute(f"UPDATE orders SET is_complete = 'True' WHERE id = {data[0]}")
+        shutil.rmtree(group_name)
+        os.remove(f'{group_name}.zip')

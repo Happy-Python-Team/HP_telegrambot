@@ -49,9 +49,6 @@ async def post_count(message: types.Message, state: FSMContext):
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'get_action'), reply_markup=kb_action)
 
 
-
-
-
 async def action_user(message: types.Message, state: FSMContext):
     if message.text == config.get('RUSSIAN', 'admin_b1_text'):
 
