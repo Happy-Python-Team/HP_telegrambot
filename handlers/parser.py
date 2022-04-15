@@ -95,8 +95,9 @@ async def parser(cur, con):
                                   f"&group_id=happython&user_id={user_id}&v=5.131"
 
             if requests.get(is_subscriber_check).json()['response'] == 1:
-                await bot.send_message(telegram_id, f'💟Вы подписчик нашего паблика. Спасибо вам за это! Для вас парсер '
-                                                    f'дополнительно загрузит все картинки постов отдельно💟 ')
+                await bot.send_message(telegram_id,
+                                       f'💟Вы подписчик нашего паблика. Спасибо вам за это! Для вас парсер '
+                                       f'дополнительно загрузит все картинки постов отдельно💟 ')
 
                 for post in posts:
 
@@ -105,7 +106,7 @@ async def parser(cur, con):
                     try:
                         if "attachments" in post:
                             post = post["attachments"]
-                            [urllib.request.urlretrieve(size['url'], f"{group_name}\{post_id}.jpeg") for size in
+                            [urllib.request.urlretrieve(size['url'], f"{group_name}/{post_id}.jpeg") for size in
                              post[0]['photo']['sizes'] if post[0]["type"] == "photo" and size['type'] == 'z']
                             print('ok')
 
