@@ -10,11 +10,11 @@ from handlers import parser
 from keyboards import kb_client, kb_lvl, kb_lang, kb_action
 
 
-# Это класс машины состояний, тоесь поля которые нужно вводить пользователю (Админ)
+# Это класс машины состояний, то есь поля которые нужно вводить пользователю
 class FSMAdmin(StatesGroup):
-    level = State()
-    language = State()
-
+    group_name = State()
+    post_count = State()
+    user_shortname = State()
     action = State()
 
 
@@ -29,7 +29,7 @@ async def command_start(message: types.Message):
 
 # Это функция начала ввода она вызывается по команде /предложить ( указано внизу при регистрации Хэндлера)
 async def cm_start(message: types.Message):
-    await FSMAdmin.level.set()  # отсюда перекидывает в функцию, в которой state = FSMAdmin.level
+    await FSMAdmin.group_name.set()  # отсюда перекидывает в функцию, в которой state = FSMAdmin.level
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'level'))
 
 
@@ -37,22 +37,29 @@ async def group_name(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['group_name'] = message.text
         data['tg_id'] = message.from_user.id
-    await FSMAdmin.next()  # перекидывает на следующую функцию, в порядке состояний в классе FSMAdmin
+    await FSMAdmin.user_shortname.set()  # перекидывает на следующую функцию, в порядке состояний в классе FSMAdmin
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'prog_lang'))
+
+
+async def short_username(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['short_username'] = message.text
+    await FSMAdmin.post_count.set()
+    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'post_count'))
 
 
 async def post_count(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['post_count'] = message.text
 
-    await FSMAdmin.next()
+    await FSMAdmin.action.set()
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'get_action'), reply_markup=kb_action)
 
 
 async def action_user(message: types.Message, state: FSMContext):
     if message.text == config.get('RUSSIAN', 'admin_b1_text'):
 
-        await bot.send_message(message.from_user.id, 'Запрос отправлен! Ожидайте ответа')
+        await bot.send_message(message.from_user.id, '✅ Запрос отправлен! Ожидайте ответа')
 
         await parser.sql_read(message=message, state=state)
 
@@ -73,8 +80,12 @@ def register_handlers_admin(dp: Dispatcher):
                                                          'help'])  # Пример зарегистрированного хэндлера здесь указывают команды.
     dp.register_message_handler(cm_start, Text(equals=config.get('RUSSIAN', 'client_b2_text'), ignore_case=True),
                                 state=None)  # здесь должна стартовать машина состояний
-    dp.register_message_handler(group_name, content_types=['text'], state=FSMAdmin.level)  # content_types не обязателен
-    dp.register_message_handler(post_count, state=FSMAdmin.language)
+    dp.register_message_handler(group_name, content_types=['text'],
+                                state=FSMAdmin.group_name)  # content_types не обязателен
+    dp.register_message_handler(short_username, content_types=['text'],
+                                state=FSMAdmin.user_shortname)  # content_types не обязателен
+
+    dp.register_message_handler(post_count, state=FSMAdmin.post_count)
 
     dp.register_message_handler(action_user, state=FSMAdmin.action)
     dp.register_message_handler(stop_work, Text(equals=config.get('RUSSIAN', 'client_b3_text'), ignore_case=True))
