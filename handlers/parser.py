@@ -47,7 +47,7 @@ async def parser(cur, con):
     token = os.getenv('VK_TOKEN')
     while True:
 
-        result = cur.execute(f"SELECT * FROM orders WHERE is_complete == 'False'")
+        result = cur.execute(f"SELECT * FROM orders WHERE is_complete = 'False'")
 
         data = result.fetchone()
         cur.execute(f"UPDATE orders SET is_complete = 'True' WHERE id = {data[0]}")
