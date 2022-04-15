@@ -107,7 +107,7 @@ async def parser(cur, con):
                             post = post["attachments"]
                             [urllib.request.urlretrieve(size['url'], f"{group_name}\{post_id}.jpeg") for size in
                              post[0]['photo']['sizes'] if post[0]["type"] == "photo" and size['type'] == 'z']
-
+                            print('ok')
 
                     except Exception as e:
                         print(e)
@@ -117,6 +117,7 @@ async def parser(cur, con):
 
             z = zipfile.ZipFile(f'{group_name}.zip', 'w')  # Создание нового архива
             for root, dirs, files in os.walk(f'{group_name}'):  # Список всех файлов и папок в директории
+                print(files)
                 for file in files:
                     z.write(os.path.join(root, file))  # Создание относительных путей и запись файлов в архив
 
