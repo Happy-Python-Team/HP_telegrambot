@@ -7,7 +7,7 @@ from aiogram.types import ReplyKeyboardRemove
 from bot_configure import bot
 from bot_configure import config
 from handlers import parser
-from keyboards import kb_client, kb_lvl, kb_lang, kb_action
+from keyboards import kb_client, kb_action
 
 
 # Это класс машины состояний, то есь поля которые нужно вводить пользователю
@@ -27,33 +27,45 @@ async def command_start(message: types.Message):
         await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'except_message'))
 
 
-# Это функция начала ввода она вызывается по команде /предложить ( указано внизу при регистрации Хэндлера)
+# Это функция начала ввода она вызывается по команде /start ( указано внизу при регистрации Хэндлера)
 async def cm_start(message: types.Message):
-    await FSMAdmin.group_name.set()  # отсюда перекидывает в функцию, в которой state = FSMAdmin.level
+    await FSMAdmin.group_name.set()  # отсюда перекидывает в функцию
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'level'))
 
 
 async def group_name(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['group_name'] = message.text
-        data['tg_id'] = message.from_user.id
-    await FSMAdmin.user_shortname.set()  # перекидывает на следующую функцию, в порядке состояний в классе FSMAdmin
-    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'prog_lang'))
+    if message.text == config.get('RUSSIAN', 'client_b3_text'):
+        await stop_work(message)
+        await command_start(message)
+    else:
+        async with state.proxy() as data:
+            data['group_name'] = message.text
+            data['tg_id'] = message.from_user.id
+        await FSMAdmin.user_shortname.set()  # перекидывает на следующую функцию, в порядке состояний в классе FSMAdmin
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'prog_lang'))
 
 
 async def short_username(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['short_username'] = message.text
-    await FSMAdmin.post_count.set()
-    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'post_count'))
+    if message.text == config.get('RUSSIAN', 'client_b3_text'):
+        await stop_work(message)
+        await command_start(message)
+    else:
+        async with state.proxy() as data:
+            data['short_username'] = message.text
+        await FSMAdmin.post_count.set()
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'post_count'))
 
 
 async def post_count(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['post_count'] = message.text
+    if message.text == config.get('RUSSIAN', 'client_b3_text'):
+        await stop_work(message)
+        await command_start(message)
+    else:
+        async with state.proxy() as data:
+            data['post_count'] = message.text
 
-    await FSMAdmin.action.set()
-    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'get_action'), reply_markup=kb_action)
+        await FSMAdmin.action.set()
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'get_action'), reply_markup=kb_action)
 
 
 async def action_user(message: types.Message, state: FSMContext):
