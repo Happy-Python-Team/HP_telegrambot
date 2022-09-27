@@ -2,7 +2,7 @@ from aiogram import types, Dispatcher
 
 from bot_configure import bot
 from bot_configure import config
-from keyboards.client_kb import kb_client
+from keyboards.vk_parser_keyboard import kb_client
 
 
 async def other_text(message: types.Message):

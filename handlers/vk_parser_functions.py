@@ -6,7 +6,7 @@ from aiogram.types import ReplyKeyboardRemove
 
 from bot_configure import bot
 from bot_configure import config
-from handlers import parser
+from handlers import parser_script
 from keyboards import kb_client, kb_action
 
 
@@ -37,6 +37,7 @@ async def group_name(message: types.Message, state: FSMContext):
     if message.text == config.get('RUSSIAN', 'client_b3_text'):
         await stop_work(message)
         await command_start(message)
+        await state.finish()
     else:
         async with state.proxy() as data:
             data['group_name'] = message.text
@@ -49,6 +50,7 @@ async def short_username(message: types.Message, state: FSMContext):
     if message.text == config.get('RUSSIAN', 'client_b3_text'):
         await stop_work(message)
         await command_start(message)
+        await state.finish()
     else:
         async with state.proxy() as data:
             data['short_username'] = message.text
@@ -60,6 +62,7 @@ async def post_count(message: types.Message, state: FSMContext):
     if message.text == config.get('RUSSIAN', 'client_b3_text'):
         await stop_work(message)
         await command_start(message)
+        await state.finish()
     else:
         async with state.proxy() as data:
             data['post_count'] = message.text
@@ -73,7 +76,7 @@ async def action_user(message: types.Message, state: FSMContext):
 
         await bot.send_message(message.from_user.id, '✅ Запрос отправлен! Ожидайте ответа')
 
-        await parser.sql_read(message=message, state=state)
+        await parser_script.sql_read(message=message, state=state)
 
         await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=kb_client)
         await state.finish()
@@ -84,6 +87,7 @@ async def action_user(message: types.Message, state: FSMContext):
 
 async def stop_work(message: types.Message):
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'exit_btn'), reply_markup=ReplyKeyboardRemove())
+    await command_start(message)
 
 
 # Регистрация всех хэндлеров

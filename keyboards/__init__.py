@@ -1,3 +1,3 @@
-from keyboards.client_kb import kb_client
-from keyboards.admin_kb import kb_action, kb_inline_del
-from keyboards.donate_kb import kb_donate
+from keyboards.vk_parser_keyboard import kb_client
+from keyboards.action_keyboard import kb_action
+from keyboards.support_keyboard import kb_donate

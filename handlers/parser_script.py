@@ -39,7 +39,6 @@ async def sql_read(message, state):
 def try_repeat(func):
     def wrapper(*args, **kwargs):
         count = 10
-
         while count:
             try:
                 return func(*args, **kwargs)
@@ -97,7 +96,7 @@ async def parser(cur, con):
             if requests.get(is_subscriber_check).json()['response'] == 1:
                 await bot.send_message(telegram_id,
                                        f'💟Вы подписчик нашего паблика. Спасибо вам за это! Для вас парсер '
-                                       f'дополнительно загрузит все картинки постов отдельно💟 ')
+                                       f'загрузит все картинки постов отдельно💟 ')
 
                 for post in posts:
 
