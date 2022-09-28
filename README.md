@@ -7,6 +7,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/vadimkolobanov/HP_telegrambot)
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/vadimkolobanov/HP_telegrambot)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/890a99d4e203401f8c7a2b30279b14c3)](https://www.codacy.com/gh/vadimkolobanov/HP_telegrambot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=vadimkolobanov/HP_telegrambot&amp;utm_campaign=Badge_Grade)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/vadimkolobanov/HP_telegrambot)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
 [Сообщество ВК](https://vk.com/happython/) * [Телеграм](https://t.me/python_parser_learning)
 ---
