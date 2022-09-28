@@ -87,7 +87,6 @@ async def action_user(message: types.Message, state: FSMContext):
 
 async def stop_work(message: types.Message):
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'exit_btn'), reply_markup=ReplyKeyboardRemove())
-    await command_start(message)
 
 
 # Регистрация всех хэндлеров
