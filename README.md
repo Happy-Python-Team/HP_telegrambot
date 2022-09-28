@@ -1,4 +1,6 @@
 # Телеграм бот команды Happy Python
+![Untitled Design](https://user-images.githubusercontent.com/49815477/192703497-a0776158-a82f-46dd-ba33-5930fce0fce6.jpg)
+
 [![Build status](https://ci.appveyor.com/api/projects/status/16iquxbq6thn7013?svg=true)](https://ci.appveyor.com/project/vadimkolobanov/hp-telegrambot)
 ![GitHub top language](https://img.shields.io/github/languages/top/vadimkolobanov/HP_telegrambot)
 [![License](https://img.shields.io/badge/license-AGPL-red)](./LICENSE)
