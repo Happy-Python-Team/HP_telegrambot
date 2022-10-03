@@ -1,4 +1,4 @@
-from aiogram.types import  InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 button_donate = InlineKeyboardButton('Перевод с карты', url="http://surl.li/ayyaj")
