@@ -1,12 +1,11 @@
 # Телеграм бот команды Happy Python
 ![Untitled Design](https://user-images.githubusercontent.com/49815477/192703497-a0776158-a82f-46dd-ba33-5930fce0fce6.jpg)
-
 [![Build status](https://ci.appveyor.com/api/projects/status/16iquxbq6thn7013?svg=true)](https://ci.appveyor.com/project/vadimkolobanov/hp-telegrambot)
 ![GitHub top language](https://img.shields.io/github/languages/top/vadimkolobanov/HP_telegrambot)
 [![License](https://img.shields.io/badge/license-AGPL-red)](./LICENSE)
-![GitHub last commit](https://img.shields.io/github/last-commit/vadimkolobanov/HP_telegrambot)
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/vadimkolobanov/HP_telegrambot)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/890a99d4e203401f8c7a2b30279b14c3)](https://www.codacy.com/gh/vadimkolobanov/HP_telegrambot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=vadimkolobanov/HP_telegrambot&amp;utm_campaign=Badge_Grade)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
+[![CodeFactor](https://www.codefactor.io/repository/github/vadimkolobanov/hp_telegrambot/badge/master)](https://www.codefactor.io/repository/github/vadimkolobanov/hp_telegrambot/overview/master)
 
 [Сообщество ВК](https://vk.com/happython/) * [Телеграм](https://t.me/python_parser_learning)
 ---
