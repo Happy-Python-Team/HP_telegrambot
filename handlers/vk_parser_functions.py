@@ -6,7 +6,7 @@ from aiogram.types import ReplyKeyboardRemove
 
 from bot_configure import bot
 from bot_configure import config
-from handlers import parser_script
+from scripts import parser_script
 from keyboards import kb_client, kb_action
 
 
