@@ -12,15 +12,15 @@ class Vk_analysis(StatesGroup):
     command1 = State()
 
 
-async def state_activate_analysis(message: types.Message, state: Vk_analysis):
+async def state_activate_analysis(message: types.Message):
     await message.answer('✍️Введите домен группы для анализа (название после vk.com)🔡')
     await Vk_analysis.command1.set()
 
 
-async def get_analysis(message: types.Message, state: Vk_analysis):
+async def get_analysis(message: types.Message, state: FSMContext):
     await message.answer(vk_analyzer_script.vk_analyzer_run(message))
     # завершаем состояние
-    await state.finish
+    await state.finish()
 
 
 # Регистрация всех хэндлеров
