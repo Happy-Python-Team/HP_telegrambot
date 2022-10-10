@@ -1,5 +1,7 @@
 import datetime
 import json
+import pathlib
+import sys
 import urllib.request
 import requests
 from bot_configure import bot
@@ -7,11 +9,15 @@ import shutil
 import zipfile
 import os
 import sqlite3
+
 id_admin = str(os.getenv('ADMIN'))
 
 
 async def sql_read(message, state):
-    conn = sqlite3.connect('../handlers/order.db')
+    script_path = pathlib.Path(sys.argv[0]).parent  # абсолютный путь до каталога, где лежит скрипт
+    print(script_path)
+    conn = sqlite3.connect(script_path / "order.db")  # формируем абсолютный путь до файла базы
+
     cur = conn.cursor()
 
     async with state.proxy() as data:
