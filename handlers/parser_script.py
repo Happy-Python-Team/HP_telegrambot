@@ -7,6 +7,7 @@ import shutil
 import zipfile
 import os
 import sqlite3
+id_admin = str(os.getenv('ADMIN'))
 
 
 async def sql_read(message, state):
@@ -33,7 +34,7 @@ async def sql_read(message, state):
                 await parser(cur=cur, con=conn)
         except Exception as e:
             print(e)
-            await bot.send_message(5736197809, e)
+            await bot.send_message(id_admin, e)
 
 
 def try_repeat(func):
@@ -51,7 +52,7 @@ def try_repeat(func):
 
 @try_repeat
 async def parser(cur, con):
-    token = os.getenv('VK_TOKEN')
+    token = str(os.getenv('VK_TOKEN'))
     while True:
 
         result = cur.execute(f"SELECT * FROM orders WHERE is_complete = 'False'")
@@ -120,7 +121,7 @@ async def parser(cur, con):
                 for file in files:
                     z.write(os.path.join(root, file))  # Создание относительных путей и запись файлов в архив
             z.close()
-            await bot.send_message(5736197809, f'{telegram_id} получил выдачу {datetime.date.today()} ')
+            await bot.send_message(id_admin, f'{telegram_id} получил выдачу {datetime.date.today()} ')
             doc = open(f'{group_name}.zip', 'rb')
             await bot.send_document(telegram_id, document=doc)
             cur.execute(f"UPDATE orders SET is_complete = 'True' WHERE id = {data[0]}")

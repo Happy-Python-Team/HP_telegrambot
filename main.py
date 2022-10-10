@@ -32,6 +32,7 @@ async def on_startup(_):
 
 
 # # Регистрация хэндлера из файла clients в папке handlers.
+handlers.vk_analyzer_functions.register_handlers_analysis(dp)
 handlers.vk_parser_functions.register_handlers_admin(dp)
 handlers.support_functions.register_handlers_support(dp)
 handlers.other_functions.register_handlers_other(dp)
