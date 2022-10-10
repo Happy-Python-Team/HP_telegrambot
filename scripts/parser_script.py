@@ -11,7 +11,7 @@ id_admin = str(os.getenv('ADMIN'))
 
 
 async def sql_read(message, state):
-    conn = sqlite3.connect('order.db')
+    conn = sqlite3.connect('../handlers/order.db')
     cur = conn.cursor()
 
     async with state.proxy() as data:
