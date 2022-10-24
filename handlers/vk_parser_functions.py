@@ -6,7 +6,7 @@ from aiogram.types import ReplyKeyboardRemove
 
 from bot_configure import bot
 from bot_configure import config
-from handlers import parser_script
+from scripts import parser_script
 from keyboards import kb_client, kb_action
 
 
@@ -30,11 +30,11 @@ async def command_start(message: types.Message):
 # Это функция начала ввода она вызывается по команде /start ( указано внизу при регистрации Хэндлера)
 async def cm_start(message: types.Message):
     await FSMAdmin.group_name.set()  # отсюда перекидывает в функцию
-    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'level'))
+    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'vk_domen'))
 
 
 async def group_name(message: types.Message, state: FSMContext):
-    if message.text == config.get('RUSSIAN', 'client_b3_text'):
+    if message.text == config.get('RUSSIAN', 'stop_work'):
         await stop_work(message)
         await command_start(message)
         await state.finish()
@@ -43,11 +43,11 @@ async def group_name(message: types.Message, state: FSMContext):
             data['group_name'] = message.text
             data['tg_id'] = message.from_user.id
         await FSMAdmin.user_shortname.set()  # перекидывает на следующую функцию, в порядке состояний в классе FSMAdmin
-        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'prog_lang'))
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'vk_username'))
 
 
 async def short_username(message: types.Message, state: FSMContext):
-    if message.text == config.get('RUSSIAN', 'client_b3_text'):
+    if message.text == config.get('RUSSIAN', 'stop_work'):
         await stop_work(message)
         await command_start(message)
         await state.finish()
@@ -59,7 +59,7 @@ async def short_username(message: types.Message, state: FSMContext):
 
 
 async def post_count(message: types.Message, state: FSMContext):
-    if message.text == config.get('RUSSIAN', 'client_b3_text'):
+    if message.text == config.get('RUSSIAN', 'stop_work'):
         await stop_work(message)
         await command_start(message)
         await state.finish()
@@ -72,7 +72,7 @@ async def post_count(message: types.Message, state: FSMContext):
 
 
 async def action_user(message: types.Message, state: FSMContext):
-    if message.text == config.get('RUSSIAN', 'admin_b1_text'):
+    if message.text == config.get('RUSSIAN', 'send'):
 
         await bot.send_message(message.from_user.id, '✅ Запрос отправлен! Ожидайте ответа')
 
@@ -86,14 +86,14 @@ async def action_user(message: types.Message, state: FSMContext):
 
 
 async def stop_work(message: types.Message):
-    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'exit_btn'), reply_markup=ReplyKeyboardRemove())
+    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'exit_msg'), reply_markup=ReplyKeyboardRemove())
 
 
 # Регистрация всех хэндлеров
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(command_start, commands=['start',
                                                          'help'])  # Пример зарегистрированного хэндлера здесь указывают команды.
-    dp.register_message_handler(cm_start, Text(equals=config.get('RUSSIAN', 'client_b2_text'), ignore_case=True),
+    dp.register_message_handler(cm_start, Text(equals=config.get('RUSSIAN', 'parse_group'), ignore_case=True),
                                 state=None)  # здесь должна стартовать машина состояний
     dp.register_message_handler(group_name, content_types=['text'],
                                 state=FSMAdmin.group_name)  # content_types не обязателен
@@ -103,4 +103,4 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(post_count, state=FSMAdmin.post_count)
 
     dp.register_message_handler(action_user, state=FSMAdmin.action)
-    dp.register_message_handler(stop_work, Text(equals=config.get('RUSSIAN', 'client_b3_text'), ignore_case=True))
+    dp.register_message_handler(stop_work, Text(equals=config.get('RUSSIAN', 'stop_work'), ignore_case=True))
