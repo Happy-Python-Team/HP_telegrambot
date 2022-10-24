@@ -11,7 +11,7 @@ COPY lang /
 COPY .env /
 COPY bot_configure.py /
 COPY main.py /
-COPY order.db /
+COPY support_files/order.db /
 
 
 CMD [ "python3", "./main.py" ]
