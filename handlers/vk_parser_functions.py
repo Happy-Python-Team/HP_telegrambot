@@ -7,7 +7,7 @@ from aiogram.types import ReplyKeyboardRemove
 from bot_configure import bot
 from bot_configure import config
 from scripts import parser_script
-from keyboards import kb_client, kb_action
+from keyboards import get_main_menu, kb_action
 
 
 # Это класс машины состояний, то есь поля которые нужно вводить пользователю
@@ -21,7 +21,7 @@ class FSMAdmin(StatesGroup):
 async def command_start(message: types.Message):
     try:
 
-        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'hello_message'), reply_markup=kb_client)
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'hello_message'), reply_markup=get_main_menu(message.from_user.id))
         await message.delete()
     except Exception:
         await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'except_message'))

@@ -15,5 +15,7 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
     #reboot
+
+ADMINS = (456110449, 5736197809, 1201850429)
 bot = Bot(token=str(os.getenv('TOKEN')))
 dp = Dispatcher(bot, storage=STORAGE)

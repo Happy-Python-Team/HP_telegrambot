@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from bot_configure import config, bot
-from keyboards import kb_client
+from keyboards import get_main_menu
 from scripts import vk_analyzer_script
 
 
@@ -20,7 +20,7 @@ async def get_analysis(message: types.Message, state: FSMContext):
     await message.answer(vk_analyzer_script.vk_analyzer_run(message))
     # завершаем состояние
     await state.finish()
-    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=kb_client)
+    await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=get_main_menu(message.from_user.id))
 
 
 # Регистрация всех хэндлеров
