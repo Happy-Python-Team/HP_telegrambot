@@ -2,6 +2,7 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import StatesGroup, State
+
 from bot_configure import config, bot
 from keyboards import get_main_menu
 from scripts import vk_analyzer_script
@@ -17,7 +18,8 @@ async def state_activate_analysis(message: types.Message):
 
 
 async def get_analysis(message: types.Message, state: FSMContext):
-    await message.answer(vk_analyzer_script.vk_analyzer_run(message))
+    result_analyzer_vk = await vk_analyzer_script.vk_analyzer_run(message)
+    await message.answer(result_analyzer_vk)
     # завершаем состояние
     await state.finish()
     await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=get_main_menu(message.from_user.id))
