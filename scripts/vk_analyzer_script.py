@@ -32,7 +32,6 @@ async def get_offset(group_id):
 
 
 async def vk_analyzer_run(group_id):
-
     last_30_days = datetime.datetime.now().date() - datetime.timedelta(days=30)
     count_active_users = 0
     count_users_can_closed_visit = 0

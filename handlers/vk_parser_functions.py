@@ -76,13 +76,13 @@ async def action_user(message: types.Message, state: FSMContext):
 
         await bot.send_message(message.from_user.id, '✅ Запрос отправлен! Ожидайте ответа')
 
-        await parser_script.sql_read(message=message, state=state)
+        await parser_script.sql_read(state=state)
 
-        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=kb_client)
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=get_main_menu(message.from_user.id))
         await state.finish()
     else:
         await state.finish()  # Убивает машину состояний, обязательно иначе кнопки не обновятся
-        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=kb_client)
+        await bot.send_message(message.from_user.id, config.get('RUSSIAN', 'back_to_menu'), reply_markup=get_main_menu(message.from_user.id))
 
 
 async def stop_work(message: types.Message):
