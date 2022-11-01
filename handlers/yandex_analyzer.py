@@ -1,12 +1,15 @@
+import datetime
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
 from bot_configure import config, dp, ADMINS
-from yandex.api import parse_metrics_and_yandex_advertise_network
+from yandex.api import (parse_metrics_and_yandex_advertise_network,
+                        get_balance_yandex_advertise_network)
 from keyboards.main_menu_keyboard import get_main_menu
-from keyboards.yandex_analyzer_keyboard import keabord_yandex
+from keyboards.yandex_analyzer_keyboard import keyboard_yandex
 
 
 class YandexAnalysis(StatesGroup):
@@ -18,9 +21,10 @@ class YandexAnalysis(StatesGroup):
 async def get_yandex(message: types.Message, state: FSMContext):
     if message.from_user.id in ADMINS:
         await state.set_state(YandexAnalysis.yandex)
-        await message.answer(text="Выберете один из вариантов", reply_markup=keabord_yandex)
+        await message.answer(text="Выберете один из вариантов", reply_markup=keyboard_yandex)
     else:
-        await message.answer(text="У вас недостаточно прав для использования данной команды", reply_markup=get_main_menu(message.from_user.id))
+        await message.answer(text="У вас недостаточно прав для использования данной команды",
+                             reply_markup=get_main_menu(message.from_user.id))
 
 
 @dp.message_handler(Text(equals="Этот месяц"), state=YandexAnalysis.yandex)
@@ -58,7 +62,14 @@ async def get_yandex_period(message: types.Message, state: FSMContext):
     periods = message.text.split(":")
     data_yandex_period = await parse_metrics_and_yandex_advertise_network(f"https://partner2.yandex.ru/api/statistics2/get.json?lang=ru&pretty=1&field=partner_wo_nds&period={periods[0]}&period={periods[1]}&dimension_field=date|day&dir=asc&entity_field=block_level", btn="период")
     await state.finish()
-    await message.answer(text=data_yandex_period, reply_markup=keabord_yandex)
+    await message.answer(text=data_yandex_period, reply_markup=keyboard_yandex)
+
+
+@dp.message_handler(Text(equals="Баланс"), state=YandexAnalysis.yandex)
+async def get_balance(message: types.Message):
+    url = f"https://partner2.yandex.ru/api/statistics2/get.json?lang=ru&pretty=1&field=partner_wo_nds&period=2022-10-03&period={datetime.datetime.now().date()}"
+    balance = await get_balance_yandex_advertise_network(url)
+    await message.answer(text=balance)
 
 
 @dp.message_handler(Text(equals="Назад"), state=YandexAnalysis.yandex)

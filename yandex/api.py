@@ -57,3 +57,14 @@ async def parse_metrics_and_yandex_advertise_network(url, period=True, btn=""):
                 text += f"В среднем за день: {average_payment}₽"
 
     return text
+
+
+async def get_balance_yandex_advertise_network(url):
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as response:
+            json = await response.json()
+
+    balance = list(json['data']['totals'].values())[0][0]['partner_wo_nds']
+
+    return f"Текущий баланс: {balance}₽"
