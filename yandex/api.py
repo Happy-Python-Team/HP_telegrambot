@@ -56,6 +56,9 @@ async def parse_metrics_and_yandex_advertise_network(url, period=True, btn=""):
 
                 text += f"В среднем за день: {average_payment}₽"
 
+        if text == "":
+            text = "Данных пока нет"
+
     return text
 
 
