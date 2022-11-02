@@ -69,7 +69,7 @@ async def get_yandex_period(message: types.Message, state: FSMContext):
 async def get_balance(message: types.Message):
     url = f"https://partner2.yandex.ru/api/statistics2/get.json?lang=ru&pretty=1&field=partner_wo_nds&period=2022-10-03&period={datetime.datetime.now().date()}"
     balance = await get_balance_yandex_advertise_network(url)
-    await message.answer(text=balance)
+    await message.answer(text=balance, reply_markup=keyboard_yandex)
 
 
 @dp.message_handler(Text(equals="Назад"), state=YandexAnalysis.yandex)
